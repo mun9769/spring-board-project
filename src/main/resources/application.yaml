@@ -21,7 +21,6 @@ spring:
       hibernate.format_sql: true # debug 문장을 한줄이 아닌 format해서 제공한다.
       hibernate.default_batch_fetch_size: 100
   sql.init.mode: always # data.sql파일을 앱실행 시 실행시킬 수 있다.
-  h2.console.enabled: true
 
 ---
 # 테스트 db용 문서를 따로 작성함
