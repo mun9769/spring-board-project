@@ -1,0 +1,35 @@
+debug: false
+management.endpoints.web.exposure.include: "*"
+
+logging:
+  level:
+    com.fastcampus.boardproject: debug
+    org.springframework.web.servlet: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/board
+    username: moon
+    password: thisisTESTpw!@#$%
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    defer-datasource-initialization: true
+    hibernate.ddl-auto: create # domain을 보고 자동으로 ddl문을 통해 db의 table을 만들어준다.
+    show-sql: true
+    properties:
+      hibernate.format_sql: true # debug 문장을 한줄이 아닌 format해서 제공한다.
+      hibernate.default_batch_fetch_size: 100
+  sql.init.mode: always # data.sql파일을 앱실행 시 실행시킬 수 있다.
+  h2.console.enabled: true
+
+---
+# 테스트 db용 문서를 따로 작성함
+
+spring:
+  config.activate.on-profile: testdb
+#  datasource: # ch02.08 19:00
+#    url: jdbc:h2:mem:board;mode=ysql
+#    driver-class-name: org.h2.Driver
+#  sql.init.mode: always
+#  test.database.replace: none
