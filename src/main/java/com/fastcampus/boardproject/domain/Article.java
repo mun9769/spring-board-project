@@ -24,9 +24,8 @@ import java.util.Set;
         @Index(columnList = "createdAt"),
         @Index(columnList = "createdBy")
 })
-@EntityListeners(AuditingEntityListener.class) /// JpaConfig의 auditing을 사용하기 위해 작성한 어노테이션이다.
 @Entity
-public class Article {
+public class Article extends AuditingFields{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,11 +38,6 @@ public class Article {
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL) // 공부목적의 양방향 바인딩.
     @ToString.Exclude // circular referencing 이슈 발생을 막아준다.
     private final Set<ArticleComment> articleComments = new LinkedHashSet<>();
-
-    @CreatedDate @Column(nullable = false) private LocalDateTime createdAt;
-    @CreatedBy @Column(nullable = false, length = 100) private String createdBy;
-    @LastModifiedDate @Column(nullable = false) private LocalDateTime modifiedAt;
-    @LastModifiedBy @Column(nullable = false, length = 100) private String modifiedBy;
 
     protected Article() {}
 
