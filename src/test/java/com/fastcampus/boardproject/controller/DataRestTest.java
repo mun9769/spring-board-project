@@ -1,5 +1,6 @@
 package com.fastcampus.boardproject.controller;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 // @WebMvcTest // 슬라이스 테스트, controller 외의 것은 읽지 않는다. datarest의 autoconfig를 읽지 않는다. /// 05.API 테스트 정의 15:00
+@Disabled("Spring Data REST 통합테스트는 제외시킴")
 @DisplayName("Data REST api 테스트")
 @Transactional // @Transactional을 붙이면 기본동작이 rollback이라 테스트함수가 완료되면 모두 롤백된다.
 @AutoConfigureMockMvc
