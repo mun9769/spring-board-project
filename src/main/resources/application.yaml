@@ -24,6 +24,9 @@ spring:
   data.rest:
     base-path: /api
     detection-strategy: annotated # 우리의 레포를 어디까지 노출시킬지 정한다. annotated는 @Repository가 붙은 레포만 공개한다.
+  thymeleaf3:
+    decoupled-logic: true
+
 
 ---
 # 테스트 db용 문서를 따로 작성함
