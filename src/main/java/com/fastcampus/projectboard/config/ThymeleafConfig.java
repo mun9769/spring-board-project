@@ -1,4 +1,4 @@
-package com.fastcampus.boardproject.config;
+package com.fastcampus.projectboard.config;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.fastcampus.boardproject.domain;
+package com.fastcampus.projectboard.domain;
 
 import lombok.Getter;
 import lombok.Setter;

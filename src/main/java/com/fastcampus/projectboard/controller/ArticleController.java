@@ -1,4 +1,4 @@
-package com.fastcampus.boardproject.controller;
+package com.fastcampus.projectboard.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
