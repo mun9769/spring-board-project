@@ -2,16 +2,14 @@ package com.fastcampus.boardproject.repository;
 
 import com.fastcampus.boardproject.config.JpaConfig;
 import com.fastcampus.boardproject.domain.Article;
+import com.fastcampus.boardproject.domain.UserAccount;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -25,13 +23,16 @@ class JpaRepositoryTest {
 
     private final ArticleRepository articleRepository;
     private final ArticleCommentRepository articleCommentRepository;
+    private final UserAccountRepository userAccountRepository;
 
     // 테스트에서도 생성자 주입 패턴을 사용 가능합니다. 근거는
     public JpaRepositoryTest( // 3. @DataJpaTest 안에 모든 slice test가 가지고 있는 extend with spring extension이 있다.
-            @Autowired ArticleRepository articleRepository,
-            @Autowired ArticleCommentRepository articleCommentRepository) {
+                              @Autowired ArticleRepository articleRepository,
+                              @Autowired ArticleCommentRepository articleCommentRepository,
+                              @Autowired UserAccountRepository userAccountRepository) {
         this.articleRepository = articleRepository;
         this.articleCommentRepository = articleCommentRepository;
+        this.userAccountRepository = userAccountRepository;
     }
 
     @DisplayName("select 테스트")
@@ -53,11 +54,12 @@ class JpaRepositoryTest {
     void givenTestDate_whenInserting_thenWorksFine() {
         // given
         long previousCount = articleRepository.count();
-        Article article = Article.of("new article", "new content", "new hashtag");
+        UserAccount userAccount = userAccountRepository.save(UserAccount.of("uno","pw", null, null, null));
+        Article article = Article.of(userAccount, "new article", "new content", "new hashtag");
         System.out.println("previousCount = " + previousCount);
 
         // when
-        Article savedArticle = articleRepository.save(article);
+        articleRepository.save(article);
 
         // then
         assertThat(articleRepository.count())
