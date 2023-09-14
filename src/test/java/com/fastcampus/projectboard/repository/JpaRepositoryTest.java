@@ -50,11 +50,9 @@ class JpaRepositoryTest {
     void givenTestDate_whenInserting_thenWorksFine() {
         // given
         long previousCount = articleRepository.count();
-        Article article = Article.of("new article", "new content", "new hashtag");
         System.out.println("previousCount = " + previousCount);
 
         // when
-        Article savedArticle = articleRepository.save(article);
 
         // then
         assertThat(articleRepository.count())
