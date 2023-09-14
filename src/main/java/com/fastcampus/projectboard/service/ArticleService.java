@@ -8,8 +8,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
 
 @RequiredArgsConstructor
 @Transactional
@@ -18,22 +22,43 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     // 댓글 레포를 넣으면 좋겠지만 댓글은 게시글에서 다루면 좋으니 여기서 의존성을 넣진 않겠다.
 
-    @Transactional(readOnly = true) //// 레포가 아니라 service에서 트랜잭션을 거네?
+    @Transactional(readOnly = true)
     public Page<ArticleDto> searchArticles(SearchType searchType, String searchKeyword, Pageable pageable) {
-        return Page.empty();
+        if(searchKeyword == null || searchKeyword.isBlank()) {
+            return articleRepository.findAll(pageable).map(ArticleDto::from);
+        }
+
+        return switch(searchType) {
+            case TITLE -> articleRepository.findByTitleContaining(searchKeyword, pageable).map(ArticleDto::from);
+            case CONTENT -> articleRepository.findByContentContaining(searchKeyword, pageable).map(ArticleDto::from);
+            case ID -> articleRepository.findByUserAccount_UserIdContaining(searchKeyword, pageable).map(ArticleDto::from);
+            case NICKNAME -> articleRepository.findByUserAccount_NicknameContaining(searchKeyword, pageable).map(ArticleDto::from);
+            case HASHTAG -> articleRepository.findByHashtag(searchKeyword, pageable).map(ArticleDto::from);
+        };
     }
     @Transactional(readOnly = true)
     public ArticleWithCommentsDto getArticle(Long articleId) {
-        return null;
+        return articleRepository.findById(articleId)
+                .map(ArticleWithCommentsDto::from)
+                .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다 - articleId: " + articleId));
     }
 
     public void saveArticle(ArticleDto dto) {
+        articleRepository.save(dto.toEntity());
     }
 
     public void updateArticle(ArticleDto dto){
-
+        try {
+            var article = articleRepository.getReferenceById(dto.id());
+            if(dto.title() != null) { article.setTitle(dto.title()); }
+            if(dto.content() != null) { article.setContent(dto.content());}
+            article.setHashtag(dto.hashtag());
+        } catch(EntityNotFoundException e){
+            System.out.println("ArticleService.updateArticle has error");
+        }
     }
 
     public void deleteArticle(long articleId) {
+        articleRepository.deleteById(articleId);
     }
 }
