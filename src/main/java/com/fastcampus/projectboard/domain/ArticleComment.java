@@ -30,6 +30,7 @@ public class ArticleComment extends AuditingFields{
     private ArticleComment(UserAccount userAccount, Article article, String content) {
         this.userAccount = userAccount;
         this.article = article;
+        this.userAccount = userAccount;
         this.content = content;
     }
     public static ArticleComment of(UserAccount userAccount, Article article, String content) {

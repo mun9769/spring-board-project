@@ -22,13 +22,16 @@ class JpaRepositoryTest {
 
     private final ArticleRepository articleRepository;
     private final ArticleCommentRepository articleCommentRepository;
+    private final UserAccountRepository userAccountRepository;
 
     // 테스트에서도 생성자 주입 패턴을 사용 가능합니다. 근거는
     public JpaRepositoryTest( // 3. @DataJpaTest 안에 모든 slice test가 가지고 있는 extend with spring extension이 있다.
-            @Autowired ArticleRepository articleRepository,
-            @Autowired ArticleCommentRepository articleCommentRepository) {
+                              @Autowired ArticleRepository articleRepository,
+                              @Autowired ArticleCommentRepository articleCommentRepository,
+                              @Autowired UserAccountRepository userAccountRepository) {
         this.articleRepository = articleRepository;
         this.articleCommentRepository = articleCommentRepository;
+        this.userAccountRepository = userAccountRepository;
     }
 
     @DisplayName("select 테스트")
