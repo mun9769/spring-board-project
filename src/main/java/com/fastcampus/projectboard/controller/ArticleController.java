@@ -35,7 +35,6 @@ public class ArticleController {
     ) {
         Page<ArticleResponse> articles = articleService.searchArticles(searchType, searchValue, pageable).map(ArticleResponse::from);
         List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), articles.getTotalPages());
-        //// getTotalPages()는 articles가 전체의 마지막 페이지를 안다는 건가?
 
 
         map.addAttribute("articles", articles);

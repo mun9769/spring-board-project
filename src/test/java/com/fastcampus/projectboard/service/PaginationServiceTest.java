@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @DisplayName("비즈니스 로직 - 페이지네이션")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = PaginationService.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = PaginationService.class) // 가볍게 스프링부트를 사용할 수 있다.
 class PaginationServiceTest {
 
     private final PaginationService sut;
@@ -38,7 +38,9 @@ class PaginationServiceTest {
         assertThat(actual).isEqualTo(expected);
     }
 
-    // 어캐 쓰는거임?
+    // 함수명과 변수명이 같으면 테스트해줄 수 있다.
+    // @ParameterizedTest 어노테이션도 추가하였다.
+    // 입력값 넣는 @MethodSource 방법을 선택했다.
     static Stream<Arguments> givenCurrentPageNumberAndTotalPages_whenCalculating_thenReturnsPaginationBarNumbers() {
         return Stream.of(
                 arguments(0, 13, List.of(0, 1, 2, 3, 4)),
