@@ -14,6 +14,7 @@ spring:
     password: thisisTESTpw!@#$%
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
+    open-in-view: false
     defer-datasource-initialization: true
     hibernate.ddl-auto: create # domain을 보고 자동으로 ddl문을 통해 db의 table을 만들어준다.
     show-sql: true
