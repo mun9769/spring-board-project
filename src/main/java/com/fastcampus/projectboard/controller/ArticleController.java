@@ -25,6 +25,7 @@ public class ArticleController {
             @RequestParam(required = false) SearchType searchType,
             @RequestParam(required = false) String searchValue,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            // Pageable pageable만 코드해도 동작하지만 옵션을 추가하기 위해 @PageableDefault를 추가함
             ModelMap map
     ) {
         map.addAttribute("articles", articleService.searchArticles(searchType, searchValue, pageable).map(ArticleResponse::from));

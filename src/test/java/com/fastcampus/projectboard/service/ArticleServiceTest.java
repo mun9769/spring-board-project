@@ -123,6 +123,7 @@ class ArticleServiceTest {
         Article article = createArticle();
         ArticleDto dto = createArticleDto("새 타이틀", "새 내용", "#springboot");
         given(articleRepository.getReferenceById(dto.id())).willReturn(article);
+        //// findById vs getReferenceById
 
         // When
         sut.updateArticle(dto);

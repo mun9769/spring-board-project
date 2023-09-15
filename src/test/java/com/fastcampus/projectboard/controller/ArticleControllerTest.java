@@ -45,6 +45,8 @@ class ArticleControllerTest {
         // given
         given(articleService.searchArticles(eq(null), eq(null), any(Pageable.class))).willReturn(Page.empty());
         //// 왜 eq를 씀
+        //// 필드 중 일부만 matcher를 사용할 수 없다.
+        //// 모든 필드가 matcher 타입을 사용해야 한다.
 
         // when & then
         mvc.perform(get("/articles"))
