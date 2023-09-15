@@ -4,6 +4,7 @@ import com.fastcampus.projectboard.config.SecurityConfig;
 import com.fastcampus.projectboard.dto.ArticleWithCommentsDto;
 import com.fastcampus.projectboard.dto.UserAccountDto;
 import com.fastcampus.projectboard.service.ArticleService;
+import com.fastcampus.projectboard.service.PaginationService;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,15 +14,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -34,6 +37,7 @@ class ArticleControllerTest {
     private final MockMvc mvc;
 
     @MockBean private ArticleService articleService;
+    @MockBean private PaginationService paginationService;
 
     public ArticleControllerTest(@Autowired MockMvc mvc) {
         this.mvc = mvc;
@@ -47,15 +51,48 @@ class ArticleControllerTest {
         //// 왜 eq를 씀
         //// 필드 중 일부만 matcher를 사용할 수 없다.
         //// 모든 필드가 matcher 타입을 사용해야 한다.
+        given(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).willReturn(List.of(0,1,2,3,4));
 
         // when & then
         mvc.perform(get("/articles"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("articles/index")) /// 07. 뷰 엔드포인트 테스트 정의 18:00
-                .andExpect(model().attributeExists("articles")); // key중에 articles가 있는지 확인
+                .andExpect(model().attributeExists("articles")) // key중에 articles가 있는지 확인
+                .andExpect(model().attributeExists("paginationBarNumbers"));
         then(articleService).should().searchArticles(eq(null), eq(null), any(Pageable.class));
+        then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
 
+    }
+
+    @DisplayName("[view][GET] 게시글 리스트 (게시판) 페이지 - 페이징, 정렬 기능")
+    @Test
+    void givenPagingAndSortingParams_whenSearchingArticlesPage_thenReturnsArticlesPage() throws Exception {
+        // Given
+        String sortName = "title";
+        String direction = "desc";
+        int pageNumber = 0;
+        int pageSize = 5;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Order.desc(sortName)));
+        //// PageRequest가 뭘까?
+        List<Integer> barNumbers = List.of(1, 2, 3, 4, 5);
+        given(articleService.searchArticles(null, null, pageable)).willReturn(Page.empty());
+        given(paginationService.getPaginationBarNumbers(pageable.getPageNumber(), Page.empty().getTotalPages())).willReturn(barNumbers);
+
+        // When & Then
+        mvc.perform(
+                        get("/articles")
+                                .queryParam("page", String.valueOf(pageNumber))
+                                .queryParam("size", String.valueOf(pageSize))
+                                .queryParam("sort", sortName + "," + direction)
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+                .andExpect(view().name("articles/index"))
+                .andExpect(model().attributeExists("articles"))
+                .andExpect(model().attribute("paginationBarNumbers", barNumbers));
+        then(articleService).should().searchArticles(null, null, pageable);
+        then(paginationService).should().getPaginationBarNumbers(pageable.getPageNumber(), Page.empty().getTotalPages());
     }
 
     @DisplayName("[view][GET] 게시글 페이지 - 정상 호출")
