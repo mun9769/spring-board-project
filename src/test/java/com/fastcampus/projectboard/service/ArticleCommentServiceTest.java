@@ -75,7 +75,7 @@ class ArticleCommentServiceTest {
         given(articleRepository.getReferenceById(dto.articleId())).willThrow(EntityNotFoundException.class);
 
         // when
-//        sut.saveArticleComment(dto);
+        sut.saveArticleComment(dto);
 
         // then
         then(articleRepository).should().getReferenceById(dto.articleId());
