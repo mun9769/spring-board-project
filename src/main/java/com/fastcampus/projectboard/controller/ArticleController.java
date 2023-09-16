@@ -39,6 +39,7 @@ public class ArticleController {
 
         map.addAttribute("articles", articles);
         map.addAttribute("paginationBarNumbers", barNumbers);
+        map.addAttribute("searchType", SearchType.values());
 
         //// ArticleDto를 ArticleResponse로 바로 바꿀 수 있는건가? ㅇㅇ // ArticleResponse::from 함수가 있음.
         return "articles/index";
